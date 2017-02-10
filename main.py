@@ -94,21 +94,13 @@ tree = Tree()
 
 
 
-
-
-
-
-
-
-
-
 def dfs(stack, node):
     
     for item in stack:
         item.visited = 1
         if len(Tree.discoverMoveNodes(item)) > 0: 
             stack.extend(Tree.addChildOfList(Tree.discoverMoveNodes(item)))
-                dfs()
+                dfs(stack, node)
         
     t.printTree
 
