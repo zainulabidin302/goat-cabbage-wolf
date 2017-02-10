@@ -9,14 +9,14 @@ class Tree:
         pass
     
     def addRoot(self,val):
-        node = {'value': val, 'parent': -1, 'id': -1}
+        node = {'value': val, 'parent': -1, 'id': -1, 'isVisited': 0}
        
         self.nodes.append(node)
         return node
         
     
     def addChildOf(self,parent_node, val):
-        node = {'value': val, 'parent': parent_node.get('id'), 'id': self.id}
+        node = {'value': val, 'parent': parent_node.get('id'), 'id': self.id, 'isVisited': 0}
         self.id = self.id + 1
         self.nodes.append(node)
         return node
@@ -25,7 +25,7 @@ class Tree:
     def addChildOfList(self,parent_node, ls):
         new_nodes = []
         for node in ls:
-            n = {'value': node, 'parent': parent_node.get('id'), 'id': self.id}
+            n = {'value': node, 'parent': parent_node.get('id'), 'id': self.id, 'isVisited': 0}
             new_nodes.append(n)
             self.id = self.id + 1
             self.nodes.append(n)
@@ -54,7 +54,6 @@ class Tree:
             if self.isDuplicate(move):
                 return False
                 
-                
             for m in [(W,W,E,E), (W,W,W,E), (E,E,W,W) , (E,E,E,W), (W,E,E,W), (E,W,W,E)]:
                 if m == move:
                     return False
@@ -82,10 +81,10 @@ class Tree:
         
         return n_moves
  
- 
+        
     def isDuplicate(self, move):
-        print move
-        print move in self.nodes
+
+
         if move in [n.get('value') for n in self.nodes]:
             return True
         False
@@ -93,16 +92,39 @@ class Tree:
 tree = Tree()
 
 
+def isLeaf(l):
+    return len(l) < 1
 
-def dfs(stack, node):
+stack = []
+def dfs(root):
     
-    for item in stack:
-        item.visited = 1
-        if len(Tree.discoverMoveNodes(item)) > 0: 
-            stack.extend(Tree.addChildOfList(Tree.discoverMoveNodes(item)))
-                dfs(stack, node)
+    newly_discovered_nodes = tree.discoverMoveNodes(root)
+    nodes_list = []
+    for node in newly_discovered_nodes:
+        nodes_list.append(tree.addChildOf(root, node))
         
-    t.printTree
+    stack.extend(nodes_list)    
+
+    #base case
+    if isLeaf(nodes_list):
+        return stack.pop()
+
+        
+    #recursive case
+    for node in stack:
+        if node.get('isVisited') == 1:
+            continue
+        
+        if node.get('value') == goal:
+            print 'result'
+            print stack
+            return
+        
+        node['isVisited'] = 1
+        dfs(node)
+            
+
+
 
 
 start = (E,E,E,E) #initial
@@ -111,10 +133,12 @@ goal  = (W,W,W,W)
 stack = []
 t = Tree()
 
+
 root = t.addRoot(start)
-dfs(stack, root)
+stack.append(root)
+dfs(root)
 
-
+t.printTree()
 
     
 
